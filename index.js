@@ -10,10 +10,10 @@ var fb_url = endpt => "https://graph.facebook.com/v2.12"+endpt;
 var fb_auth = "https://www.facebook.com/v2.12/dialog/oauth?";
 var fb_auth2 = "https://graph.facebook.com/v2.12/oauth/access_token?";
 
-function getAuthURL(){
+function getAuthURL(opt){
     // redirect to fb
     // TODO: track state
-    return new Promise.resolve().then(() => fb_auth+qstring.stringify(opt));
+    return Promise.resolve().then(() => fb_auth+qstring.stringify(opt));
 }
 
 function getAccessToken(code, opt){ 
@@ -33,6 +33,7 @@ function getUserInfo(token){
         request.get(fb_url("/me"), 
         {auth:{bearer:token}, json:true}, (error, result, body) => {
             if(error){ return err(); }
+            body.picture = fb_url("/"+body.id+"/picture?type=large");
             res(body); 
         });
     });
@@ -47,7 +48,7 @@ app.get("/fba", function(req, res){
     };
 
     if (!query.code){ 
-        return getAuthUrl().then((url) => res.redirect(307, url));
+        return getAuthURL(opt).then((url) => res.redirect(307, url));
     }
     
     getAccessToken(query.code, opt)
