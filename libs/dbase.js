@@ -102,7 +102,6 @@ module.exports = {
     exec: function(schema){
         return new Promise((res, err) => {
             var db = getDB(); 
-            console.log(schema);
             db.exec(schema, ()=>res());
             db.close();
         });
