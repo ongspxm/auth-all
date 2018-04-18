@@ -20,7 +20,7 @@ class API {
 
     // callback(authURL)
     getAuthURL(){
-        // TODO: track state (which user, whay comp)
+        // TODO: track state (which user, what client fingerprint)
         return Promise.resolve().then(() => fb_auth+qstring.stringify(this.opt));
     }
     
