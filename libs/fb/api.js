@@ -3,29 +3,37 @@ const request = require("request");
 const qstring = require("querystring");
 
 const imgur = require("../imgur.js");
+const users = require("./users.js");
 
 var fb_url = endpt => "https://graph.facebook.com/v2.12"+endpt;
 var fb_auth = "https://www.facebook.com/v2.12/dialog/oauth?";
 var fb_auth2 = "https://graph.facebook.com/v2.12/oauth/access_token?";
 
-class API {
-    var opt = { 
-        client_id: process.env.FB_APP_ID,
-        client_secret: process.env.FB_APP_SC,
-    };
-    
-    constructor(host){
-        this.opt["redirect_uri"] = "https://"+host+"/fb";
-    }
+var opt = { 
+    client_id: process.env.FB_APP_ID,
+    client_secret: process.env.FB_APP_SC,
+    redirect_uri: "https://"+process.env.HOST+"/fb";
+};
+ 
+function callAPI(token, endpt){
+    return new Promise((res, err) => {
+        request.get(fb_url(endpt), 
+        {auth:{bearer:token}, json:true}, (error, result, body) => {
+            if(error){ return err(error); }
+            res(body); 
+        });
+    });
+}
 
+module.exports = {
     // callback(authURL)
-    getAuthURL(){
+    getAuthURL: function(){
         // TODO: track state (which user, what client fingerprint)
         return Promise.resolve().then(() => fb_auth+qstring.stringify(this.opt));
     }
     
     // callback(accessTkn)
-    getAccessToken(code){ 
+    getAccessToken: function(code){ 
         this.opt["code"] = code; 
 
         return new Promise((res, err) => { 
@@ -36,30 +44,33 @@ class API {
             }); 
         });
     }
-    
-    callAPI(token, endpt){
-        return new Promise((res, err) => {
-            request.get(fb_url(endpt), 
-            {auth:{bearer:token}, json:true}, (error, result, body) => {
-                if(error){ return err(error); }
-                res(body); 
-            });
-        });
-    }
 
     // callback(userInfo)
-    getUserInfo(token){
+    getUserInfo: function(token){
         return Promise.resolve()
             .then(() => callAPI(token, "/me"));
     }
 
     // callback(imgurURL)
-    getUserPic(token){
-        // TODO: check if dbase exist (how to update img)
-        // TODO: imugur
+    getUserPic: function(token, g_id){ 
+        var g_img, g_usr, g_url;
+
         return Promise.resolve()
-            .then(() => callAPI(token, "/me/picture?type=large&fields=cache_key,url"));
+        .then(() => {
+            if(!g_id){
+                callAPI(token, "/me?fields=id").then((obj) => g_id=obj.id);
+            }
+        })
+        .then(() => users.getUser(g_id).then(usr => g_usr=usr))
+        .then(() => callAPI(token, "/me/picture?type=large&fields=cache_key,url"))
+        .then((img) => g_img=img)
+        .then(() => g_img.cache_key==g_usr.dpic_cache)
+        .then((same) => {
+            if(same){ return imgur.getUrl(g_usr.imgur_id); }
+
+            // TODO: delete old imgs?
+            return imgur.upload(g_img.url)
+            .then((img) => img.url);
+        });
     }
 };
-
-module.exports = API;

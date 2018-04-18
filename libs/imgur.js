@@ -6,6 +6,14 @@ const dbase = require("./dbase.js");
 var api_url = endpt=>"https://api.imgur.com/3"+endpt;
 
 module.exports = {
+    getURL: function(id){
+        return dbase.select("imgurs", "id=?", [id])
+        .then((imgs) => {
+            if(imgs.length==1){ return imgs[0].url; }
+            throw "libs/imgur#getUrl() unable to find image";
+        });
+    },
+
     upload: function(data){ 
         // callback({id, url, delHash})
         var opts = {
@@ -57,7 +65,6 @@ module.exports = {
                     if(error){ return err(error); }
                     if(!body.success){ return err(body.data.error); }
 
-                    console.log(body);
                     dbase.delete("imgurs", "id=?", [id]).then(() => res());
                 });
             }));

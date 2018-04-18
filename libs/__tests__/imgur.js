@@ -44,6 +44,24 @@ describe("lib/imgur.js", () => {
             .catch(() => done());
         });
     });
+    
+    describe("#getURL()", () => {
+        it("all good.", done => {
+            var g_img;
+            
+            imgur.upload(imgUrl)
+            .then((img) => g_img=img)
+            .then(() => imgur.getURL(g_img.id))
+            .then((url) => assert.equal(g_img.url, url))
+            .then(() => done());
+        });
+
+        it("id doesnt exist.", done => {
+            // wont affect others
+            imgur.getURL("asdf")
+            .catch(() => done());
+        });
+    });
 
     describe("#delete()", () => {
         it("all good.", done => {
@@ -64,6 +82,7 @@ describe("lib/imgur.js", () => {
         });
 
         it("id doesnt exist.", done => {
+            // wont affect others
             imgur.upload(imgUrl)
             .then(() => imgur.delete())
             .then(() => dbase.select("imgurs"))
