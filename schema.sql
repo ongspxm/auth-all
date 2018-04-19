@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS fb_users(
     id TEXT,
     name TEXT,
     dpic_cache TEXT,
-    imgurs_id TEXT
+    imgur_id TEXT
 );
 CREATE UNIQUE INDEX fb_id ON fb_users(id);
 

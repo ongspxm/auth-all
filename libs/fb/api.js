@@ -68,9 +68,15 @@ module.exports = {
         .then((same) => {
             if(same){ return imgur.getUrl(g_usr.imgur_id); }
 
-            // TODO: delete old imgs?
+            var g_img2;
             return imgur.upload(g_img.url)
-            .then((img) => img.url);
+            .then(img => g_img2=img)
+            .then(() => users.updateUser({
+                id: g_id,
+                imgur_id: g_img2.id, 
+                dpic_cache: g_img2.cache_key 
+            }))
+            .then(() => g_img2.url);
         });
     }
 };
