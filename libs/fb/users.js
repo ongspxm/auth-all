@@ -27,7 +27,7 @@ fns = {
             return Promise.reject("libs/fb/users#updateUser no idx found"); 
         }
 
-        // create is not exist 
+        // create if not exist 
         return fns.getUser(usr.id)
         .then(dbase.update("fb_users", usr, "id=?", [usr.id]))
         .then(() => true);

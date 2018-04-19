@@ -39,4 +39,30 @@ describe("lib/fb/users.js", () => {
             .then(() => done());
         });
     });
+
+    describe("#updateUser()", () => {
+        it("all good.", done => { 
+            var id="asdf", name="asdf qwerty";
+
+            dbase.insert("fb_users", {id:id, name:"qwerty"})
+            .then(() => users.updateUser({id:id, name:name}))
+            .then(() => users.getUser(id))
+            .then((usr) => assert.equal(usr.name, name))
+            .then(() => done());
+        });
+
+        it("user doesnt exist.", done => {
+            var id = "asdf";
+
+            users.updateUser({id:id, name:"asdf"})
+            .then(() => dbase.select("fb_users", "id=?", [id]))
+            .then(usrs => assert.equal(usrs.length, 1))
+            .then(() => done());
+        });
+
+        it("error in format, missing id.", done => {
+            users.updateUser({name:"asdf"})
+            .catch(() => done());
+        });
+    });
 });
