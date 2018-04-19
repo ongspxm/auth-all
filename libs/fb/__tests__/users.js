@@ -23,7 +23,20 @@ describe("lib/fb/users.js", () => {
         fs.unlink(DB_TMP, () => done());
     });
 
-    describe("#upload()", () => {
-        it("all good.", done => done());
+    describe("#getUser()", () => {
+        it("all good.", done => { 
+            dbase.insert("fb_users", {id:"asdf"})
+            .then(() => users.getUser("asdf"))
+            .then((usr) => assert.equal(usr.id, "asdf"))
+            .then(() => done());
+        });
+
+        it("doesnt exist.", done => { 
+            users.getUser("asdf")
+            .then((usr) => assert.equal(usr.id, "asdf"))
+            .then(() => dbase.select("fb_users", "id=?", ["asdf"]))
+            .then((usrs) => assert.equal(usrs.length, 1))
+            .then(() => done());
+        });
     });
 });
