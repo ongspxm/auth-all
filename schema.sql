@@ -4,21 +4,21 @@ CREATE TABLE IF NOT EXISTS fb_users(
     dpic_cache TEXT,
     imgur_id TEXT
 );
-CREATE UNIQUE INDEX fb_id ON fb_users(id);
+CREATE UNIQUE INDEX IF NOT EXISTS fb_id ON fb_users(id);
 
 CREATE TABLE IF NOT EXISTS signins(
     hash TEXT,
     site_id TEXT,
-    callback TEXT,
+    callback TEXT
 );
-CREATE UNIQUE INDEX signin_hash ON signins(hash);
+CREATE UNIQUE INDEX IF NOT EXISTS signin_hash ON signins(hash);
 
 CREATE TABLE IF NOT EXISTS imgurs(
     id TEXT,
     url TEXT,
     delHash TEXT
 );
-CREATE UNIQUE INDEX imgur_id ON imgurs(id);
+CREATE UNIQUE INDEX IF NOT EXISTS imgur_id ON imgurs(id);
 
 CREATE TABLE IF NOT EXISTS accts(
     id INTEGER PRIMARY KEY,
@@ -31,5 +31,4 @@ CREATE TABLE IF NOT EXISTS sites(
     secret TEXT,
     acct_id INTEGER
 );
-CREATE UNIQUE INDEX site_domain ON sites(domain);
-CREATE UNIQUE INDEX site_id ON sites(id);
+CREATE UNIQUE INDEX IF NOT EXISTS site_id ON sites(id);
