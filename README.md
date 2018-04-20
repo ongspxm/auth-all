@@ -14,5 +14,15 @@
 }
 ```
 
+## sites
+```
+{
+    id: "clientId",
+    secret: "clientSecret",
+    domain: "activeDomain",
+    acct_id: tied_to_which_acc
+}
+```
+
 ## setting up
 fill in the process.env values in .sample.env

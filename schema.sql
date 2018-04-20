@@ -6,6 +6,13 @@ CREATE TABLE IF NOT EXISTS fb_users(
 );
 CREATE UNIQUE INDEX fb_id ON fb_users(id);
 
+CREATE TABLE IF NOT EXISTS fb_signins(
+    id INTEGER PRIMARY KEY,
+    site_id TEXT,
+    callback_url TEXT
+);
+
+
 CREATE TABLE IF NOT EXISTS imgurs(
     id TEXT,
     url TEXT,
@@ -19,8 +26,10 @@ CREATE TABLE IF NOT EXISTS accts(
 );
 
 CREATE TABLE IF NOT EXISTS sites(
-    hash TEXT,
     domain TEXT,
+    id TEXT,
+    secret TEXT,
     acct_id INTEGER
 );
-CREATE UNIQUE INDEX site_name ON sites(domain);
+CREATE UNIQUE INDEX site_domain ON sites(domain);
+CREATE UNIQUE INDEX site_id ON sites(id);

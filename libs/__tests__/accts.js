@@ -71,7 +71,8 @@ describe("libs/accts.js", () => {
             .then(() => accts.addSite(g_acct.id, domain))
             .then(site => { 
                 assert.equal(site.domain, domain); 
-                assert.ok(site.hash);
+                assert.ok(site.id);
+                assert.ok(site.secret);
             })
             .then(() => done());
         });
@@ -96,16 +97,17 @@ describe("libs/accts.js", () => {
     describe("#getSite()", () => {
         it("all good.", done => {
             var fb_id="fb_12341234", domain="asdf";
-            var g_acct, g_hash;
+            var g_acct, g_site;
             
             accts.getFbAcct(fb_id)
             .then(acct => g_acct=acct)
             .then(() => accts.addSite(g_acct.id, domain))
-            .then(site => g_hash=site.hash)
-            .then(() => accts.getSite(domain))
+            .then(site => g_site=site)
+            .then(() => accts.getSite(g_site.id))
             .then(site => {
                 assert.equal(site.acct_id, g_acct.id);
-                assert.equal(site.hash, g_hash);
+                assert.equal(site.id, g_site.id);
+                assert.equal(site.secret, g_site.secret);
             })
             .then(() => done());
         });

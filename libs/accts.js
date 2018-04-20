@@ -2,9 +2,9 @@
 const crypto = require("crypto");
 const dbase = require("./dbase.js");
 
-function genHash(){
+function genHash(text){
     return crypto.createHash("sha256")
-    .update((new Date()).getTime()+""+Math.random()).digest("hex");
+    .update((new Date()).getTime()+""+Math.random()+""+text).digest("hex");
 }
 
 fns = {
@@ -48,7 +48,8 @@ fns = {
         .then(() => fns.getAcct(acct_id))
         .then(acct => g_site={ 
             acct_id: acct_id,
-            hash: genHash(), 
+            id: genHash(domain),
+            secret: genHash(), 
             domain: domain
         })
         .then(() => dbase.insert("sites", g_site))
@@ -56,8 +57,8 @@ fns = {
     },
 
     // callback(site)
-    getSite: function(domain){
-        return dbase.select("sites", "domain=?", [domain]) 
+    getSite: function(id){
+        return dbase.select("sites", "id=?", [id]) 
         .then(sites => {
             if(sites.length!=1){ 
                 return Promise.reject("libs/accts#getSite domain doesnt exist");

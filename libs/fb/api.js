@@ -9,11 +9,10 @@ var fb_url = endpt => "https://graph.facebook.com/v2.12"+endpt;
 var fb_auth = "https://www.facebook.com/v2.12/dialog/oauth?";
 var fb_auth2 = "https://graph.facebook.com/v2.12/oauth/access_token?";
 
-var opt = { 
+var getOpt = () => {return { 
     client_id: process.env.FB_APP_ID,
-    client_secret: process.env.FB_APP_SC,
-    redirect_uri: "https://"+process.env.HOST+"/fb";
-};
+    client_secret: process.env.FB_APP_SC
+};};
  
 function callAPI(token, endpt){
     return new Promise((res, err) => {
@@ -27,29 +26,39 @@ function callAPI(token, endpt){
 
 module.exports = {
     // callback(authURL)
-    getAuthURL: function(){
-        // TODO: track state (which user, what client fingerprint)
+    getAuthURL: function(callback){
+        if(!callback){
+            return Promise.reject("fb/api#getAuthURL callback url not provided");
+        }
+        if(!callback.startsWith("https://")){
+            return Promise.reject("fb/api#getAuthURL only https callbacks allowed");
+        }
+
+        var opt = getOpt();
+        opt["redirect_uri"] = callback;
+
         return Promise.resolve().then(() => fb_auth+qstring.stringify(this.opt));
-    }
+    },
     
     // callback(accessTkn)
     getAccessToken: function(code){ 
-        this.opt["code"] = code; 
+        var opt = getOpt(); 
+        opt["code"] = code; 
 
         return new Promise((res, err) => { 
             request(fb_auth2+qstring.stringify(opt), 
             {json:true}, (error, result, body) => { 
-                if(error){ return err(); }
+                if(body.error){ return err(body.error.message); }
                 res(body.access_token);
             }); 
         });
-    }
+    },
 
     // callback(userInfo)
     getUserInfo: function(token){
         return Promise.resolve()
-            .then(() => callAPI(token, "/me"));
-    }
+        .then(() => callAPI(token, "/me?fields?id,name"));
+    },
 
     // callback(imgurURL)
     getUserPic: function(token, g_id){ 
