@@ -26,7 +26,9 @@ function callAPI(token, endpt){
 
 module.exports = {
     // callback(authURL)
-    getAuthURL: function(callback){
+    getAuthURL: function(callback, state){
+        // callback required, state optional
+
         if(!callback){
             return Promise.reject("fb/api#getAuthURL callback url not provided");
         }
@@ -36,6 +38,7 @@ module.exports = {
 
         var opt = getOpt();
         opt["redirect_uri"] = callback;
+        opt["state"] = state;
 
         return Promise.resolve().then(() => fb_auth+qstring.stringify(this.opt));
     },
