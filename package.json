@@ -1,0 +1,27 @@
+{
+  "name": "auth-all",
+  "version": "1.0.0",
+  "description": "jwt-based authentication from everywhere (fb currently)",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.16.3",
+    "jest": "^22.4.3",
+    "jwt-simple": "^0.5.1",
+    "request": "^2.85.0",
+    "sqlite3": "^4.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ongspxm/auth-all.git"
+  },
+  "author": "ongspxm",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ongspxm/auth-all/issues"
+  },
+  "homepage": "https://github.com/ongspxm/auth-all#readme"
+}
