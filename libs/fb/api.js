@@ -18,7 +18,7 @@ function callAPI(token, endpt){
     return new Promise((res, err) => {
         request.get(fb_url(endpt), 
         {auth:{bearer:token}, json:true}, (error, result, body) => {
-            if(error){ return err(error); }
+            if(body.error){ return err("fb/api "+body.error.message); }
             res(body); 
         });
     });
@@ -55,33 +55,32 @@ module.exports = {
     },
 
     // callback(userInfo)
-    getUserInfo: function(token){
-        return Promise.resolve()
-        .then(() => callAPI(token, "/me?fields?id,name"));
+    getUserInfo: function(accessTkn){
+        return callAPI(accessTkn, "/me?fields?id,name");
     },
 
     // callback(imgurURL)
-    getUserPic: function(token, g_id){ 
+    getUserPic: function(token, fb_id){ 
         var g_img, g_usr, g_url;
 
         return Promise.resolve()
         .then(() => {
-            if(!g_id){
-                callAPI(token, "/me?fields=id").then((obj) => g_id=obj.id);
+            if(!fb_id){
+                return callAPI(token, "/me?fields=id").then((obj) => fb_id=obj.id);
             }
         })
-        .then(() => users.getUser(g_id).then(usr => g_usr=usr))
+        .then(() => users.getUser(fb_id).then(usr => g_usr=usr))
         .then(() => callAPI(token, "/me/picture?type=large&fields=cache_key,url"))
         .then((img) => g_img=img)
         .then(() => g_img.cache_key==g_usr.dpic_cache)
         .then((same) => {
-            if(same){ return imgur.getUrl(g_usr.imgur_id); }
+            if(same){ return imgur.getURL(g_usr.imgur_id); }
 
             var g_img2;
             return imgur.upload(g_img.url)
             .then(img => g_img2=img)
             .then(() => users.updateUser({
-                id: g_id,
+                id: fb_id,
                 imgur_id: g_img2.id, 
                 dpic_cache: g_img2.cache_key 
             }))

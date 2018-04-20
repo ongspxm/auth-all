@@ -46,15 +46,21 @@ describe("lib/fb/api.js", () => {
             var reqCode = "asdf";
 
             fbapi.getAccessToken(reqCode)
-            .then(console.log)
             .catch(() => done());
         });
     }); 
 
     describe("#getUserInfo()", () => {
-        it("all good.", done => done());
+        it("err in accessTkn.", done => {
+            fbapi.getUserInfo("asdf")
+            .catch(() => done());
+        });
     });
+
     describe("#getUserPic()", () => {
-        it("all good.", done => done());
+        it("err in accessTkn.", done => {
+            fbapi.getUserPic("asdf")
+            .catch(() => done());
+        });
     });
 });
