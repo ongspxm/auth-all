@@ -19,8 +19,8 @@ CREATE TABLE IF NOT EXISTS accts(
 );
 
 CREATE TABLE IF NOT EXISTS sites(
-    name TEXT,
     hash TEXT,
+    domain TEXT,
     acct_id INTEGER
 );
-CREATE UNIQUE INDEX site_name ON sites(name);
+CREATE UNIQUE INDEX site_name ON sites(domain);

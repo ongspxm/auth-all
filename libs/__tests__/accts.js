@@ -44,24 +44,126 @@ describe("libs/accts.js", () => {
         });
     });
 
-    describe("#getSites()", () => {
+    describe("#getAcct()", () => {
         it("all good.", done => {
-            var fb_id="fb_12341234", acct_id;
+            var fb_id="fb_12341234"; 
             
             accts.getFbAcct(fb_id)
-            // TODO addSite
+            .then(acct => accts.getAcct(acct.id))
             .then(acct => assert.equal(acct.fb_id, fb_id))
             .then(() => done());
         });
 
         it("acc dun exist.", done => {
-            var fb_id = "fb_12341234"; 
-            
-            accts.getFbAcct(fb_id)
-            .then(acct => assert.equal(acct.fb_id, fb_id))
-            .then(() => dbase.select("accts", "fb_id=?", [fb_id]))
-            .then((accts) => assert.equal(accts.length, 1))
-            .then(() => done());
+            accts.getAcct(100)
+            .then(console.log)
+            .catch(() => done());
         });
     });
+
+    describe("#addSite()", () => {
+        it("all good.", done => {
+            var fb_id="fb_12341234", g_acct; 
+            var domain="asdf";
+            
+            accts.getFbAcct(fb_id)
+            .then(acct => g_acct=acct)
+            .then(() => accts.addSite(g_acct.id, domain))
+            .then(site => { 
+                assert.equal(site.domain, domain); 
+                assert.ok(site.hash);
+            })
+            .then(() => done());
+        });
+
+        it("site already exist.", done => { 
+            var fb_id="fb_12341234", g_acct; 
+            var domain="asdf";
+
+            accts.getFbAcct(fb_id)
+            .then(acct => g_acct=acct)
+            .then(() => accts.addSite(g_acct.id, domain))
+            .then(() => accts.addSite(g_acct.id, domain))
+            .catch(() => done());
+        });
+
+        it("acc dun exist.", done => {
+            accts.addSite(100, "asdf")
+            .catch(() => done());
+        });
+    });
+
+    describe("#getSite()", () => {
+        it("all good.", done => {
+            var fb_id="fb_12341234", domain="asdf";
+            var g_acct, g_hash;
+            
+            accts.getFbAcct(fb_id)
+            .then(acct => g_acct=acct)
+            .then(() => accts.addSite(g_acct.id, domain))
+            .then(site => g_hash=site.hash)
+            .then(() => accts.getSite(domain))
+            .then(site => {
+                assert.equal(site.acct_id, g_acct.id);
+                assert.equal(site.hash, g_hash);
+            })
+            .then(() => done());
+        });
+
+        it("site dun exist.", done => {
+            accts.getSite("asdf")
+            .catch(() => done());
+        });
+    }); 
+
+    describe("#getSites()", () => {
+        it("all good.", done => {
+            var fb_id="fb_12341234", domain="asdf";
+            var g_acct;
+            
+            accts.getFbAcct(fb_id)
+            .then(acct => g_acct=acct)
+            .then(() => accts.addSite(g_acct.id, domain))
+            .then(() => accts.getSites(g_acct.id))
+            .then(sites => assert.equal(sites.length, 1))
+            .then(() => done());
+        });
+
+        it("no sites.", done => {
+            var fb_id="fb_12341234", g_acct;
+            
+            accts.getFbAcct(fb_id)
+            .then(acct => g_acct=acct)
+            .then(() => accts.getSites(g_acct.id))
+            .then(sites => assert.equal(sites.length, 0))
+            .then(() => done());
+        });
+
+        it("acc doesnt exist.", done => {
+            accts.getSites(100)
+            .then(() => done());
+        });
+    }); 
+
+    describe("#validDomain()", () => {
+        it("all good.", done => {
+            var fb_id="fb_12341234", domain="asdf";
+            
+            accts.getFbAcct(fb_id)
+            .then(acct => accts.addSite(acct.id, domain))
+            .then(() => accts.validDomain(domain))
+            .then(valid => assert.ok(!valid))
+            .then(() => done());
+        });
+
+        it("site doesnt exist.", done => {
+            var domain="asdf";
+            
+            accts.validDomain(domain)
+            .then(valid => assert.ok(valid))
+            .then(() => done());
+        });
+    }); 
+
+
 });

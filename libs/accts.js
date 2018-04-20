@@ -7,7 +7,7 @@ function genHash(){
     .update((new Date()).getTime()+""+Math.random()).digest("hex");
 }
 
-module.exports = {
+fns = {
     // callback(acct)
     getFbAcct: function(fb_id){
         var g_acct;
@@ -27,21 +27,55 @@ module.exports = {
         .then(() => g_acct);
     },
 
-    // callback(sites)
-    getSites: function(acct_id){
-        return db.select("sites", "acct_id=?", [acct_id]);
+    // callback(acct)
+    getAcct: function(acct_id){
+        return dbase.select("accts", "id=?", [acct_id])
+        .then(accts => {
+            if(accts.length==1){ return accts[0]; }
+            else{ return Promise.reject(); }
+        })
+        .catch(() => Promise.reject("libs/accts#getAcct id doesnt exist"));
     },
 
     // callback(site)
-    getSite: function(acct_id, site_id){
-        db.select("sites", "site_id=?", [site_id])
-        .then(sites => 
-        return  
+    addSite: function(acct_id, domain){
+        var g_site;
+
+        return fns.validDomain(domain)
+        .then(valid => {
+            if(!valid) return Promise.reject("libs/accts#addSite domain taken");
+        })
+        .then(() => fns.getAcct(acct_id))
+        .then(acct => g_site={ 
+            acct_id: acct_id,
+            hash: genHash(), 
+            domain: domain
+        })
+        .then(() => dbase.insert("sites", g_site))
+        .then(() => g_site);
+    },
+
+    // callback(site)
+    getSite: function(domain){
+        return dbase.select("sites", "domain=?", [domain]) 
+        .then(sites => {
+            if(sites.length!=1){ 
+                return Promise.reject("libs/accts#getSite domain doesnt exist");
+            }
+            return sites[0];
+        });
+    },
+
+    // callback(sites)
+    getSites: function(acct_id){
+        return dbase.select("sites", "acct_id=?", [acct_id]);
     },
 
     // callback(domainExist)
     validDomain: function(domain){ 
-        return db.select("sites", "name=?", [domain])
+        return dbase.select("sites", "domain=?", [domain])
         .then(sites => sites.length==0); 
     }
 };
+
+module.exports = fns;
