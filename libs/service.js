@@ -1,7 +1,7 @@
 /** libs/service.js */
-const crypto = require("crypto');
+const crypto = require("crypto");
 const jwt = require("jwt-simple");
-const dbase = require("../dbase.js");
+const dbase = require("./dbase.js");
 
 const fb = require("./fb");
 const accts = require("./accts.js");
@@ -27,10 +27,10 @@ module.exports = {
             return Promise.reject("libs/service#fbInitiate callback url not provided"); 
         }
         if(!cbUrl.startsWith("http")){
-            return Promise.reject("libs/service#fbInitiate invalid callback url format"); 
+            return Promise.reject("libs/service#fbInitiate only https allowed"); 
         }
 
-        var g_site, g_hash=getHash(clientId);
+        var g_site, g_hash=genHash(clientId);
 
         return accts.getSite(clientId)
         .then(site => g_site=site)
@@ -42,7 +42,7 @@ module.exports = {
                 callback: cbUrl
             }); 
         })
-        .then(() => fb.getURL(getUrl("/fb"), hash));
+        .then(() => fb.getURL(getUrl("/fb"), g_hash));
     },
 
     // callback(url) their own app

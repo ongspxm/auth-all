@@ -25,4 +25,4 @@
 ```
 
 ## setting up
-fill in the process.env values in .sample.env
+fill in the `process.env` values in `.sample.env`
