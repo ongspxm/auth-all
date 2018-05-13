@@ -1,0 +1,70 @@
+/** libs/__tests__/server_admin.js */
+const fs = require("fs");
+const assert = require("assert");
+
+const jwt = require("jwt-simple");
+
+const DB_TMP = ".data/tmp.db";
+const dbase = require("../dbase.js");
+const admin = require("../server_admin.js");
+
+tkn = jwt.encode({
+    "sub": "fb_123123123"
+}, process.env.APP_SC);
+
+function getDB(){
+    return (new sqlite.Database(DB_TMP));
+}
+
+describe("libs/server_admin.js", () => {
+    beforeAll(() => {
+        process.env.DB_DBASE = DB_TMP;
+    });
+    
+    beforeEach((done) => {
+        dbase.setup()
+        .then(() => require("../../setup.js"))
+        .then(() => done());
+    });
+
+    afterEach((done) => {
+        fs.unlink(DB_TMP, () => done());
+    });
+
+    describe("#signin()", () => {
+        it("all good.", done => {
+            url = "https://"+process.env.HOST+"/admin/signin";
+            admin.signin(url)
+            .then(url => assert.ok(url.startsWith("https://www.facebook.com")))
+            .then(done);
+        });
+    });
+
+    describe("#addSite()", () => {
+        it("all good.", done => {
+            domain = "www.facebook.com";
+
+            admin.addSite(tkn, domain)
+            .then(site => assert.equal(site.domain, domain))
+            .then(done);
+        });
+
+        it("wrong token.", done => {
+            domain = "www.facebook.com";
+
+            admin.addSite(tkn+"a", domain)
+            .catch(() => done());
+        });
+
+        it("existing domain.", done => {
+            domain = "www.facebook.com";
+
+            admin.addSite(tkn, domain)
+            .then(() => admin.addSite(tkn, domain))
+            .catch(err => {
+                assert.ok(err.indexOf("domain taken")>0);
+                done();
+            });
+        });
+    });
+});
