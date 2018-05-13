@@ -9,10 +9,9 @@ var fb_url = endpt => "https://graph.facebook.com/v2.12"+endpt;
 var fb_auth = "https://www.facebook.com/v2.12/dialog/oauth?";
 var fb_auth2 = "https://graph.facebook.com/v2.12/oauth/access_token?";
 
-var getOpt = () => {return { 
-    client_id: process.env.FB_APP_ID,
-    client_secret: process.env.FB_APP_SC
-};};
+var getOpt = () => ({ 
+    client_id: process.env.FB_APP_ID
+});
  
 function callAPI(token, endpt){
     return new Promise((res, err) => {
@@ -40,12 +39,13 @@ module.exports = {
         opt["redirect_uri"] = callback;
         opt["state"] = state;
 
-        return Promise.resolve().then(() => fb_auth+qstring.stringify(this.opt));
+        return Promise.resolve().then(() => fb_auth+qstring.stringify(opt));
     },
     
     // callback(accessTkn)
     getAccessToken: function(code){ 
-        var opt = getOpt(); 
+        var opt = getOpt();
+        opt["client_secret"] = process.env.FB_APP_SC;
         opt["code"] = code; 
 
         return new Promise((res, err) => { 
