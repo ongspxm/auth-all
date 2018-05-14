@@ -8,7 +8,7 @@ const accts = require("./accts.js");
 
 var genHash = txt => crypto.createHash("sha256")
     .update(txt+""+Math.random()).digest("hex");
-var getUrl = endpt => "https://"+process.env.HOST;
+var getUrl = endpt => "https://"+process.env.HOST+endpt;
 
 // 3 days expiry
 var expiry = 3*24*60*60*1000;

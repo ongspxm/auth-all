@@ -10,7 +10,7 @@ module.exports = {
     getInfo: function(reqCode){
         var g_tkn, g_usr;
 
-        return fbapi.getAccessToken(reqTkn)
+        return fbapi.getAccessToken(reqCode)
         .then(tkn => {
             g_tkn=tkn; return fbapi.getUserInfo(g_tkn);
         })
