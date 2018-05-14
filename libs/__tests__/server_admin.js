@@ -67,4 +67,26 @@ describe("libs/server_admin.js", () => {
             });
         });
     });
+
+    describe("#getSites()", () => {
+        it("all good.", done => {
+            domain = "www.facebook.com";
+            domain2 = "www.google.com";
+
+            admin.addSite(tkn, domain)
+            .then(() => admin.addSite(tkn, domain2))
+            .then(() => admin.getSites(tkn))
+            .then(sites => {
+                assert.equal(sites[0].domain, domain);
+                assert.equal(sites[1].domain, domain2);
+            })
+            .then(done);
+        });
+
+        it("empty.", done => {
+            admin.getSites(tkn)
+            .then(sites => assert.equal(sites.length, 0))
+            .then(done);
+        });
+    });
 });

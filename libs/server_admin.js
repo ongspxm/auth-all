@@ -33,7 +33,7 @@ module.exports = {
     },
 
     // callback(site[])
-    viewSites: function(reqTkn){
+    getSites: function(reqTkn){
         return Promise.resolve()
         .then(() => getAcct(reqTkn))
         .then(acct => accts.getSites(acct.id))
