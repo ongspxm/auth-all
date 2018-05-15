@@ -25,27 +25,28 @@ function callAPI(token, endpt){
 
 module.exports = {
     // callback(authURL)
-    getAuthURL: function(callback, state){
+    getAuthURL: function(callbackURL, state){
         // callback required, state optional
 
-        if(!callback){
+        if(!callbackURL){
             return Promise.reject("fb/api#getAuthURL callback url not provided");
         }
-        if(!callback.startsWith("https://")){
+        if(!callbackURL.startsWith("https://")){
             return Promise.reject("fb/api#getAuthURL only https callbacks allowed");
         }
 
         var opt = getOpt();
-        opt["redirect_uri"] = callback;
+        opt["redirect_uri"] = callbackURL;
         opt["state"] = state;
 
         return Promise.resolve().then(() => fb_auth+qstring.stringify(opt));
     },
     
     // callback(accessTkn)
-    getAccessToken: function(code){ 
+    getAccessToken: function(code, callbackURL){ 
         var opt = getOpt();
         opt["client_secret"] = process.env.FB_APP_SC;
+        opt["redirect_uri"] = callbackURL;
         opt["code"] = code; 
 
         return new Promise((res, err) => { 

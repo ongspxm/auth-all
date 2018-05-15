@@ -8,7 +8,7 @@ const accts = require("./accts.js");
 
 var genHash = txt => crypto.createHash("sha256")
     .update(txt+""+Math.random()).digest("hex");
-var getUrl = endpt => "https://"+process.env.HOST+endpt;
+var callbackURL = "https://"+process.env.HOST+"/fb";
 
 // 3 days expiry
 var expiry = 3*24*60*60*1000;
@@ -42,7 +42,7 @@ module.exports = {
                 callback: cbUrl
             }); 
         })
-        .then(() => fb.getURL(getUrl("/fb"), g_hash));
+        .then(() => fb.getURL(callbackURL, g_hash));
     },
 
     // callback(url) their own app
@@ -57,7 +57,7 @@ module.exports = {
 
             g_signin = signins[0];
         })
-        .then(() => fb.getInfo(reqCode)) 
+        .then(() => fb.getInfo(reqCode, callbackURL)) 
         .then(usr => g_usr=usr)
         .then(() => accts.getSite(g_signin.site_id))
         .then(site => {
