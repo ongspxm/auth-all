@@ -58,7 +58,7 @@ module.exports = {
             g_signin = signins[0];
         })
         .then(() => fb.getInfo(reqCode, callbackURL)) 
-        .then(usr => {g_usr=usr; console.log(usr)})
+        .then(usr => g_usr=usr)
         .then(() => accts.getSite(g_signin.site_id))
         .then(site => {
             g_site=site;
@@ -70,7 +70,7 @@ module.exports = {
 
             return tkn; 
         })
-        .then(payload => jwt.encode(payload, site.secret))
+        .then(payload => jwt.encode(payload, g_site.secret))
         .then(tkn => g_signin.callback+"#access_token="+tkn);
     }
 };
