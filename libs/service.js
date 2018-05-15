@@ -1,14 +1,14 @@
 /** libs/service.js */
-const crypto = require("crypto');
+const crypto = require("crypto");
 const jwt = require("jwt-simple");
-const dbase = require("../dbase.js");
+const dbase = require("./dbase.js");
 
 const fb = require("./fb");
 const accts = require("./accts.js");
 
 var genHash = txt => crypto.createHash("sha256")
     .update(txt+""+Math.random()).digest("hex");
-var getUrl = endpt => "https://"+process.env.HOST;
+var callbackURL = "https://"+process.env.HOST+"/fb";
 
 // 3 days expiry
 var expiry = 3*24*60*60*1000;
@@ -27,10 +27,10 @@ module.exports = {
             return Promise.reject("libs/service#fbInitiate callback url not provided"); 
         }
         if(!cbUrl.startsWith("http")){
-            return Promise.reject("libs/service#fbInitiate invalid callback url format"); 
+            return Promise.reject("libs/service#fbInitiate only https allowed"); 
         }
 
-        var g_site, g_hash=getHash(clientId);
+        var g_site, g_hash=genHash(clientId);
 
         return accts.getSite(clientId)
         .then(site => g_site=site)
@@ -42,7 +42,7 @@ module.exports = {
                 callback: cbUrl
             }); 
         })
-        .then(() => fb.getURL(getUrl("/fb"), hash));
+        .then(() => fb.getURL(callbackURL, g_hash));
     },
 
     // callback(url) their own app
@@ -57,7 +57,7 @@ module.exports = {
 
             g_signin = signins[0];
         })
-        .then(() => fb.getInfo(reqCode)) 
+        .then(() => fb.getInfo(reqCode, callbackURL)) 
         .then(usr => g_usr=usr)
         .then(() => accts.getSite(g_signin.site_id))
         .then(site => {
@@ -70,7 +70,7 @@ module.exports = {
 
             return tkn; 
         })
-        .then(payload => jwt.encode(payload, site.secret))
+        .then(payload => jwt.encode(payload, g_site.secret))
         .then(tkn => g_signin.callback+"#access_token="+tkn);
     }
 };

@@ -1,4 +1,4 @@
-/** libs/accts.js */
+/* libs/accts.js */
 const crypto = require("crypto");
 const dbase = require("./dbase.js");
 
@@ -41,11 +41,11 @@ fns = {
     addSite: function(acct_id, domain){
         var g_site;
 
-        return fns.validDomain(domain)
+        return this.validDomain(domain)
         .then(valid => {
             if(!valid) return Promise.reject("libs/accts#addSite domain taken");
         })
-        .then(() => fns.getAcct(acct_id))
+        .then(() => this.getAcct(acct_id))
         .then(acct => g_site={ 
             acct_id: acct_id,
             id: genHash(domain),

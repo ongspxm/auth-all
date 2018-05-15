@@ -1,7 +1,7 @@
 # auth-all
 
 ## logging in user with facebook
-- call `/fb?redirect_uri=...` to get redirected
+- call `/fb?clientId=&callback=` to get redirected
 - will return to `...#/access_tkn=jwtToken`
 
 ## jwt tokens
@@ -25,4 +25,4 @@
 ```
 
 ## setting up
-fill in the process.env values in .sample.env
+fill in the `process.env` values in `.sample.env`

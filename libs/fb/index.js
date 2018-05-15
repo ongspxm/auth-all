@@ -7,10 +7,10 @@ module.exports = {
     getURL: fbapi.getAuthURL,
 
     // callback({id, name, pic})
-    getInfo: function(reqCode){
+    getInfo: function(reqCode, callbackURL){
         var g_tkn, g_usr;
 
-        return fbapi.getAccessToken(reqTkn)
+        return fbapi.getAccessToken(reqCode, callbackURL)
         .then(tkn => {
             g_tkn=tkn; return fbapi.getUserInfo(g_tkn);
         })

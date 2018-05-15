@@ -9,10 +9,9 @@ var fb_url = endpt => "https://graph.facebook.com/v2.12"+endpt;
 var fb_auth = "https://www.facebook.com/v2.12/dialog/oauth?";
 var fb_auth2 = "https://graph.facebook.com/v2.12/oauth/access_token?";
 
-var getOpt = () => {return { 
-    client_id: process.env.FB_APP_ID,
-    client_secret: process.env.FB_APP_SC
-};};
+var getOpt = () => ({ 
+    client_id: process.env.FB_APP_ID
+});
  
 function callAPI(token, endpt){
     return new Promise((res, err) => {
@@ -26,26 +25,28 @@ function callAPI(token, endpt){
 
 module.exports = {
     // callback(authURL)
-    getAuthURL: function(callback, state){
+    getAuthURL: function(callbackURL, state){
         // callback required, state optional
 
-        if(!callback){
+        if(!callbackURL){
             return Promise.reject("fb/api#getAuthURL callback url not provided");
         }
-        if(!callback.startsWith("https://")){
+        if(!callbackURL.startsWith("https://")){
             return Promise.reject("fb/api#getAuthURL only https callbacks allowed");
         }
 
         var opt = getOpt();
-        opt["redirect_uri"] = callback;
+        opt["redirect_uri"] = callbackURL;
         opt["state"] = state;
 
-        return Promise.resolve().then(() => fb_auth+qstring.stringify(this.opt));
+        return Promise.resolve().then(() => fb_auth+qstring.stringify(opt));
     },
     
     // callback(accessTkn)
-    getAccessToken: function(code){ 
-        var opt = getOpt(); 
+    getAccessToken: function(code, callbackURL){ 
+        var opt = getOpt();
+        opt["client_secret"] = process.env.FB_APP_SC;
+        opt["redirect_uri"] = callbackURL;
         opt["code"] = code; 
 
         return new Promise((res, err) => { 
@@ -73,8 +74,8 @@ module.exports = {
             }
         })
         .then(() => users.getUser(fb_id).then(usr => g_usr=usr))
-        .then(() => callAPI(token, "/me/picture?type=large&fields=cache_key,url"))
-        .then((img) => g_img=img)
+        .then(() => callAPI(token, "/me/picture?type=large&fields=cache_key,url&redirect=false"))
+        .then((img) => g_img=img.data)
         .then(() => g_img.cache_key==g_usr.dpic_cache)
         .then((same) => {
             if(same){ return imgur.getURL(g_usr.imgur_id); }
@@ -85,7 +86,7 @@ module.exports = {
             .then(() => users.updateUser({
                 id: fb_id,
                 imgur_id: g_img2.id, 
-                dpic_cache: g_img2.cache_key 
+                dpic_cache: g_img.cache_key 
             }))
             .then(() => g_img2.url);
         });
