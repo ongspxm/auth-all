@@ -74,8 +74,8 @@ module.exports = {
             }
         })
         .then(() => users.getUser(fb_id).then(usr => g_usr=usr))
-        .then(() => callAPI(token, "/me/picture?type=large&fields=cache_key,url"))
-        .then((img) => g_img=img)
+        .then(() => callAPI(token, "/me/picture?type=large&fields=cache_key,url&redirect=false"))
+        .then((img) => g_img=img.data)
         .then(() => g_img.cache_key==g_usr.dpic_cache)
         .then((same) => {
             if(same){ return imgur.getURL(g_usr.imgur_id); }
@@ -86,7 +86,7 @@ module.exports = {
             .then(() => users.updateUser({
                 id: fb_id,
                 imgur_id: g_img2.id, 
-                dpic_cache: g_img2.cache_key 
+                dpic_cache: g_img.cache_key 
             }))
             .then(() => g_img2.url);
         });

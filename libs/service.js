@@ -58,7 +58,7 @@ module.exports = {
             g_signin = signins[0];
         })
         .then(() => fb.getInfo(reqCode, callbackURL)) 
-        .then(usr => g_usr=usr)
+        .then(usr => {g_usr=usr; console.log(usr)})
         .then(() => accts.getSite(g_signin.site_id))
         .then(site => {
             g_site=site;

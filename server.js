@@ -25,7 +25,7 @@ app.get("/fb", (req, res) => {
 // admin endpoints
 app.get("/signin", (req, res) => {
     admin.signin("https://"+process.env.HOST+"/app")
-    .then(url => {console.log(url); res.redirect(url)}); 
+    .then(url => res.redirect(url)); 
 });
 
 var listener = app.listen(3000, function(){
