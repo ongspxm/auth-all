@@ -89,4 +89,9 @@ describe("libs/server_admin.js", () => {
             .then(done);
         });
     });
+
+    describe("#delSite()", () => {
+        it("all good.", done => {
+        });
+    });
 });

@@ -56,6 +56,19 @@ fns = {
         .then(() => g_site);
     },
 
+    // callback(true)
+    delSite: function(acct_id, site_id){
+        var qry = "id=? AND acct_id=?"; 
+        var opt = [site_id, acct_id];
+        return dbase.select("sites", qry, opt) 
+        .then(sites => {
+            if(sites.length!=1){ 
+                return Promise.reject("libs/accts#delSite domain doesnt exist");
+            }
+        })
+        .then(() => dbase.delete("sites", qry, opt));
+    },
+
     // callback(site)
     getSite: function(id){
         return dbase.select("sites", "id=?", [id]) 

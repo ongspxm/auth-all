@@ -32,6 +32,13 @@ module.exports = {
         .then(site => formatSite(site)); 
     },
 
+    // callback()
+    delSite: function(reqTkn, site_id){
+        return Promise.resolve()
+        .then(() => getAcct(reqTkn))
+        .then(acct => accts.delSite(acct.id, site_id));
+    },
+
     // callback(site[])
     getSites: function(reqTkn){
         return Promise.resolve()

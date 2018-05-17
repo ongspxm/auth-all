@@ -61,6 +61,46 @@ describe("libs/accts.js", () => {
         });
     });
 
+    describe("#delSite()", () => {
+        it("all good.", done => {
+            var fb_id="fb_12341234", domain="asdf";
+            var g_site, g_acct;
+            
+            accts.getFbAcct(fb_id)
+            .then(acct => g_acct=acct)
+            .then(() => accts.addSite(g_acct.id, domain))
+            .then(site => g_site=site)
+            .then(() => accts.delSite(g_acct.id, g_site.id))
+            .then(() => dbase.select("sites", "id=?", [g_site.id]))
+            .then(sites => assert.equal(sites.length, 0))
+            .then(() => done());
+        });
+
+        it("wrong acct_id.", done => {
+            var fb_id="fb_12341234", domain="asdf";
+            var g_site, g_acct;
+            
+            accts.getFbAcct(fb_id)
+            .then(acct => g_acct=acct)
+            .then(() => accts.addSite(g_acct.id, domain))
+            .then(site => g_site=site)
+            .then(() => accts.delSite(g_acct.id+1, g_site.id))
+            .catch(() => done());
+        });
+
+        it("wrong site_id.", done => {
+            var fb_id="fb_12341234", domain="asdf";
+            var g_site, g_acct;
+            
+            accts.getFbAcct(fb_id)
+            .then(acct => g_acct=acct)
+            .then(() => accts.addSite(g_acct.id, domain))
+            .then(site => g_site=site)
+            .then(() => accts.delSite(g_acct.id, g_site.id+1))
+            .catch(() => done());
+        });
+    }); 
+
     describe("#addSite()", () => {
         it("all good.", done => {
             var fb_id="fb_12341234", g_acct; 
@@ -172,6 +212,4 @@ describe("libs/accts.js", () => {
             .then(() => done());
         });
     }); 
-
-
 });
