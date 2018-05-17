@@ -1,0 +1,38 @@
+h1, h2{
+    text-align:center;
+}
+
+#results{
+    margin:.5rem 1rem;
+
+    .row{
+        margin-bottom:4rem;
+
+        .cell{
+            &::before{
+                display:block;
+                font-weight:bold;
+                line-height:2rem;
+            }
+            margin-bottom:0.5rem;
+        } 
+
+        .domain{ 
+            font-size:2rem;
+            font-weight:bold;
+        }
+        
+        .id::before{ content:"app id: " }
+        .secret::before{ content:"app secret: " }
+    }
+
+    .full{
+        padding-top:0.5rem;
+        text-align:center;
+    }
+}
+
+#form{
+    padding:0.5rem;
+    text-align:center;
+}

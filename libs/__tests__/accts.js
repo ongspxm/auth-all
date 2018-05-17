@@ -165,6 +165,12 @@ describe("libs/accts.js", () => {
             .then(valid => assert.ok(valid))
             .then(() => done());
         });
+
+        it("empty site.", done => { 
+            accts.validDomain()
+            .then(valid => assert.ok(!valid))
+            .then(() => done());
+        });
     }); 
 
 

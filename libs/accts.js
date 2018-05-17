@@ -47,7 +47,7 @@ fns = {
         })
         .then(() => this.getAcct(acct_id))
         .then(acct => g_site={ 
-            acct_id: acct_id,
+            acct_id: acct.id,
             id: genHash(domain),
             secret: genHash(), 
             domain: domain
@@ -74,6 +74,8 @@ fns = {
 
     // callback(domainExist)
     validDomain: function(domain){ 
+        if(!domain){ return Promise.resolve().then(() => false); }
+
         return dbase.select("sites", "domain=?", [domain])
         .then(sites => sites.length==0); 
     }
