@@ -1,11 +1,15 @@
 /** model funcs **/
 var TKN;
 
-function loadJSON(url, fn){
+function loadJSON(url, fn, fn2){
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url);
     xhr.onload = function(){
-        fn(JSON.parse(xhr.responseText));
+        if(xhr.status==200){
+            fn(JSON.parse(xhr.responseText));
+        }else if(fn2){
+            fn2(xhr.responseText);
+        }
     };
 
     xhr.setRequestHeader("Authorization", "Bearer "+TKN);
@@ -16,15 +20,15 @@ function getSites(){
     var results = document.getElementById("results"); 
     results.innerHTML = "loading... please wait...";
 
-    loadJSON("/getSites", obj => {
-        console.log(obj); 
-    });
+    loadJSON("/getSites", obj => showSites(obj));
 }
 
-function addSite(domain){
-    loadJSON("/addSite?domain="+domain, obj => {
-        console.log(obj);     
-    });
+function addSite(){
+    loadJSON("/addSite?domain="+$("domain").value,
+        () => getSites(),
+        () => alert("woah, domain exist") 
+    );
+    $("domain").value = "";
 } 
 
 /** view funcs **/
@@ -40,7 +44,38 @@ function $$(id){
 
 function $$$(className){
     var div = document.createElement("div");
-    div.id = id;
+    div.className = className;
+    return div;
+}
+
+function showSites(sites){
+    var table = $$("table");
+
+    for(var i in sites){
+        var site = sites[i];
+        var row = $$$("row");
+        
+        var fields = "domain id secret".split(" ");
+        for(var j in fields){
+            var div = $$$(fields[j]+" cell");
+            div.innerText = site[fields[j]];
+            row.appendChild(div);
+        }
+
+        var btn = document.createElement("button");
+        btn.innerHTML = "regenerate secret";
+        row.appendChild(btn);
+        table.appendChild(row);
+    }
+
+    if(sites.length==0){
+        var row = $$$("full");
+        row.innerHTML = "no site yet";
+        table.appendChild(row);
+    }
+
+    $("results").innerHTML = "";
+    $("results").appendChild(table);
 }
 
 /** controller funcs **/
