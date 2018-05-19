@@ -6,7 +6,13 @@ const service = require("./service.js");
 
 function getAcct(reqTkn){
     return Promise.resolve()
-    .then(() => jwt.decode(reqTkn, process.env.APP_SC))
+    .then(() => {
+        try{
+            return jwt.decode(reqTkn, process.env.APP_SC);
+        }catch(e){
+            throw "errorneous jwt token"; 
+        }
+    })
     .then(tkn => accts.getFbAcct(tkn.sub));
 }
 
