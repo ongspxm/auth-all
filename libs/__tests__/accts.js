@@ -224,4 +224,58 @@ describe("libs/accts.js", () => {
             .then(() => done());
         });
     }); 
+    
+    describe("#genSecret()", () => {
+        it("all good.", done => {
+            var fb_id="fb_12341234", domain="asdf";
+            var g_site, g_acct, g_secret;
+            
+            accts.getFbAcct(fb_id)
+            .then(acct => g_acct=acct)
+            .then(() => accts.addSite(g_acct.id, domain))
+            .then(site => g_site=site)
+            .then(() => accts.genSecret(g_acct.id, g_site.id, g_site.secret))
+            .then(secret => g_secret=secret)
+            .then(() => assert.ok(!(g_secret==g_site.secret)))
+            .then(() => dbase.select("sites", "id=?", [g_site.id]))
+            .then(sites => assert.equal(sites[0].secret, g_secret))
+            .then(() => done());
+        });
+
+        it("wrong acct_id.", done => {
+            var fb_id="fb_12341234", domain="asdf";
+            var g_site, g_acct, g_secret;
+            
+            accts.getFbAcct(fb_id)
+            .then(acct => g_acct=acct)
+            .then(() => accts.addSite(g_acct.id, domain))
+            .then(site => g_site=site)
+            .then(() => accts.genSecret(g_acct.id+1, g_site.id, g_site.secret))
+            .catch(() => done());
+        });
+        
+        it("wrong siteid.", done => {
+            var fb_id="fb_12341234", domain="asdf";
+            var g_site, g_acct, g_secret;
+            
+            accts.getFbAcct(fb_id)
+            .then(acct => g_acct=acct)
+            .then(() => accts.addSite(g_acct.id, domain))
+            .then(site => g_site=site)
+            .then(() => accts.genSecret(g_acct.id, g_site.id+"a", g_site.secret))
+            .catch(() => done());
+        });
+
+        it("wrong secret.", done => {
+            var fb_id="fb_12341234", domain="asdf";
+            var g_site, g_acct, g_secret;
+            
+            accts.getFbAcct(fb_id)
+            .then(acct => g_acct=acct)
+            .then(() => accts.addSite(g_acct.id, domain))
+            .then(site => g_site=site)
+            .then(() => accts.genSecret(g_acct.id, g_site.id, g_site.secret+"a"))
+            .catch(() => done());
+        });
+    });
 });

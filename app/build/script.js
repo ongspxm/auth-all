@@ -40,6 +40,15 @@ function delSite(domain, siteid, secret){
     }
 }
 
+function genSecret(domain, siteid, secret){
+    if(window.confirm("generate new secret for " + domain + "?")){
+        loadJSON("/genSecret?site=" + siteid + "&secret=" + secret, 
+            () => getSites(), 
+            () => alert("doesn't seem to work")
+        );
+    }
+}
+
 /** view funcs **/
 function $(id){
     return document.getElementById(id);
@@ -76,15 +85,17 @@ function showSites(sites){
         row.appendChild(row2);
 
         var btn = document.createElement("button");
+        var cmd = "genSecret('"+site.domain+"','"+site.id+"','"+site.secret+"');";
         btn.className = "btn--regen";
         btn.innerHTML = "regenerate secret";
+        btn.setAttribute("onclick", cmd);
         row2.appendChild(btn);
 
         var btn2 = document.createElement("button");
-        var cmd = "delSite('"+site.domain+"','"+site.id+"','"+site.secret+"');";
+        var cmd2 = "delSite('"+site.domain+"','"+site.id+"','"+site.secret+"');";
         btn2.className = "btn--delete";
         btn2.innerHTML = "delete site";
-        btn2.setAttribute("onclick", cmd);
+        btn2.setAttribute("onclick", cmd2);
         row2.appendChild(btn2);
     }
 
