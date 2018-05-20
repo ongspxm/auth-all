@@ -78,6 +78,16 @@ app.get("/delSite", (req, res) => {
     .catch(err => errFn(res, err));
 }); 
 
+app.get("/genSecret", (req, res) => {
+    var siteid = req.query.site; 
+    var secret = req.query.secret;
+    if(!siteid || !secret){ return errFn(res); }
+
+    admin.genSecret(extractJwt(req), siteid, secret) 
+    .then(() => res.send(JSON.stringify({})))
+    .catch(err => errFn(res, err));
+}); 
+
 var listener = app.listen(3000, function(){
     console.log("running on port "+listener.address().port);
 });

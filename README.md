@@ -10,6 +10,7 @@
 - `/getSites`: return list of sites
 - `/addSite?domain=`: add domain to our account
 - `/delSite?site=secret=`: delete a particular site
+- `/genSecret?site=secret=`: generate a new secret
 
 ## jwt tokens
 ```

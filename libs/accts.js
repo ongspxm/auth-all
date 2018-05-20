@@ -56,7 +56,7 @@ fns = {
         .then(() => g_site);
     },
 
-    // callback(true)
+    // callback()
     delSite: function(acct_id, site_id, site_secret){
         var qry = "id=? AND acct_id=? AND secret=?"; 
         var opt = [site_id, acct_id, site_secret];
@@ -67,6 +67,23 @@ fns = {
             }
         })
         .then(() => dbase.delete("sites", qry, opt));
+    },
+
+    // callback(newSecret)
+    genSecret: function(acct_id, site_id, site_secret){
+        var qry = "id=? AND acct_id=? AND secret=?"; 
+        var opt = [site_id, acct_id, site_secret];
+
+        var g_site, hash=genHash();
+        return dbase.select("sites", qry, opt) 
+        .then(sites => {
+            if(sites.length!=1){ 
+                return Promise.reject("libs/accts#delSite domain doesnt exist");
+            }
+            g_site = sites[0];
+        })
+        .then(() => dbase.update("sites", { secret: hash }, qry, opt))
+        .then(() => hash);
     },
 
     // callback(site)

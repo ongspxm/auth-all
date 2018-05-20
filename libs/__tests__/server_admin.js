@@ -125,4 +125,43 @@ describe("libs/server_admin.js", () => {
             .catch(() => done());
         });
     });
+
+    describe("#genSecret()", () => {
+        it("all good.", done => {
+            domain = "www.google.com";
+
+            var g_site, g_secret;
+            admin.addSite(tkn, domain)
+            .then(site => g_site=site)
+            .then(() => admin.genSecret(tkn, g_site.id, g_site.secret))
+            .then(secret => g_secret=secret)
+            .then(() => dbase.select("sites", "id=?", [g_site.id]))
+            .then(sites => assert.equal(sites[0].secret, g_secret))
+            .then(done);
+        });
+
+        it("wrong token.", done => {
+            domain = "www.google.com";
+
+            admin.addSite(tkn, domain)
+            .then(site => admin.genSite(tkn+"a", site.id, site.secret))
+            .catch(() => done());
+        });
+
+        it("wrong siteid.", done => {
+            domain = "www.google.com";
+
+            admin.addSite(tkn, domain)
+            .then(site => admin.genSite(tkn, site.id+"a", site.secret))
+            .catch(() => done());
+        });
+
+        it("wrong secret.", done => {
+            domain = "www.google.com";
+
+            admin.addSite(tkn, domain)
+            .then(site => admin.genSite(tkn, site.id, site.secret+"a"))
+            .catch(() => done());
+        });
+    });
 });

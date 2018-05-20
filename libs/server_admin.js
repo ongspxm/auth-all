@@ -45,6 +45,13 @@ module.exports = {
         .then(acct => accts.delSite(acct.id, site_id, site_secret));
     },
 
+    // callback()
+    genSecret: function(reqTkn, site_id, site_secret){
+        return Promise.resolve()
+        .then(() => getAcct(reqTkn))
+        .then(acct => accts.genSecret(acct.id, site_id, site_secret));
+    },
+
     // callback(site[])
     getSites: function(reqTkn){
         return Promise.resolve()
