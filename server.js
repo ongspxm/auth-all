@@ -74,7 +74,7 @@ app.get("/delSite", (req, res) => {
     if(!siteid || !secret){ return errFn(res); }
 
     admin.delSite(extractJwt(req), siteid, secret) 
-    .then(site => res.send(JSON.stringify(site)))
+    .then(() => res.send(JSON.stringify({})))
     .catch(err => errFn(res, err));
 }); 
 
