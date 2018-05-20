@@ -12,7 +12,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
