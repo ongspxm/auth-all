@@ -30,9 +30,31 @@ h1, h2{
         padding-top:0.5rem;
         text-align:center;
     }
+
+    .btns{
+        margin-top:1rem;
+
+        button{
+            margin-right:1rem;
+            padding:0.5rem 1rem;
+            text-transform:uppercase;
+
+            border:0;
+            cursor:pointer;
+        }
+
+        .btn--delete{
+            background:#F8BBD0;
+            &:hover{ background:#FCE4EC; }
+        }
+    }
 }
 
 #form{
     padding:0.5rem;
     text-align:center;
+
+    input{
+        margin-right:0.5rem;
+    }
 }

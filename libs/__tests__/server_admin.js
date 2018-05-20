@@ -89,4 +89,40 @@ describe("libs/server_admin.js", () => {
             .then(done);
         });
     });
+
+    describe("#delSite()", () => {
+        it("all good.", done => {
+            domain = "www.google.com";
+
+            admin.addSite(tkn, domain)
+            .then(site => admin.delSite(tkn, site.id, site.secret))
+            .then(() => admin.getSites(tkn))
+            .then(sites => assert.equal(sites.length, 0))
+            .then(done);
+        });
+
+        it("wrong token.", done => {
+            domain = "www.google.com";
+
+            admin.addSite(tkn, domain)
+            .then(site => admin.delSite(tkn+"a", site.id, site.secret))
+            .catch(() => done());
+        });
+
+        it("wrong domain.", done => {
+            domain = "www.google.com";
+
+            admin.addSite(tkn, domain)
+            .then(site => admin.delSite(tkn, site.id+1, site.secret))
+            .catch(() => done());
+        });
+
+        it("wrong secret.", done => {
+            domain = "www.google.com";
+
+            admin.addSite(tkn, domain)
+            .then(site => admin.delSite(tkn, site.id+1, site.secret))
+            .catch(() => done());
+        });
+    });
 });

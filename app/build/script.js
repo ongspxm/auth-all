@@ -31,6 +31,15 @@ function addSite(){
     $("domain").value = "";
 } 
 
+function delSite(domain, siteid, secret){
+    if(window.confirm("confirm delete site " + domain + "?")){
+        loadJSON("/delSite?site=" + siteid + "&secret=" + secret, 
+            () => getSites(), 
+            () => alert("doesn't seem to work")
+        );
+    }
+}
+
 /** view funcs **/
 function $(id){
     return document.getElementById(id);
@@ -52,9 +61,10 @@ function showSites(sites){
     var table = $$("table");
 
     for(var i in sites){
-        var site = sites[i];
+        var site = sites[i]; 
         var row = $$$("row");
-        
+        table.appendChild(row);
+
         var fields = "domain id secret".split(" ");
         for(var j in fields){
             var div = $$$(fields[j]+" cell");
@@ -62,10 +72,20 @@ function showSites(sites){
             row.appendChild(div);
         }
 
+        var row2 = $$$("btns");
+        row.appendChild(row2);
+
         var btn = document.createElement("button");
+        btn.className = "btn--regen";
         btn.innerHTML = "regenerate secret";
-        row.appendChild(btn);
-        table.appendChild(row);
+        row2.appendChild(btn);
+
+        var btn2 = document.createElement("button");
+        var cmd = "delSite('"+site.domain+"','"+site.id+"','"+site.secret+"');";
+        btn2.className = "btn--delete";
+        btn2.innerHTML = "delete site";
+        btn2.setAttribute("onclick", cmd);
+        row2.appendChild(btn2);
     }
 
     if(sites.length==0){

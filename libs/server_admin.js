@@ -6,7 +6,13 @@ const service = require("./service.js");
 
 function getAcct(reqTkn){
     return Promise.resolve()
-    .then(() => jwt.decode(reqTkn, process.env.APP_SC))
+    .then(() => {
+        try{
+            return jwt.decode(reqTkn, process.env.APP_SC);
+        }catch(e){
+            throw "errorneous jwt token"; 
+        }
+    })
     .then(tkn => accts.getFbAcct(tkn.sub));
 }
 
@@ -30,6 +36,13 @@ module.exports = {
         .then(() => getAcct(reqTkn))
         .then(acct => accts.addSite(acct.id, domain))
         .then(site => formatSite(site)); 
+    },
+
+    // callback()
+    delSite: function(reqTkn, site_id, site_secret){
+        return Promise.resolve()
+        .then(() => getAcct(reqTkn))
+        .then(acct => accts.delSite(acct.id, site_id, site_secret));
     },
 
     // callback(site[])
