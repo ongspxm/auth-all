@@ -68,6 +68,16 @@ app.get("/addSite", (req, res) => {
     .catch(err => errFn(res, err));
 }); 
 
+app.get("/delSite", (req, res) => {
+    var siteid = req.query.site; 
+    var secret = req.query.secret;
+    if(!siteid || !secret){ return errFn(res); }
+
+    admin.delSite(extractJwt(req), siteid, secret) 
+    .then(site => res.send(JSON.stringify(site)))
+    .catch(err => errFn(res, err));
+}); 
+
 var listener = app.listen(3000, function(){
     console.log("running on port "+listener.address().port);
 });

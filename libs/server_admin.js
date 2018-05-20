@@ -39,10 +39,10 @@ module.exports = {
     },
 
     // callback()
-    delSite: function(reqTkn, site_id){
+    delSite: function(reqTkn, site_id, site_secret){
         return Promise.resolve()
         .then(() => getAcct(reqTkn))
-        .then(acct => accts.delSite(acct.id, site_id));
+        .then(acct => accts.delSite(acct.id, site_id, site_secret));
     },
 
     // callback(site[])

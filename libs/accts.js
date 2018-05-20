@@ -57,9 +57,9 @@ fns = {
     },
 
     // callback(true)
-    delSite: function(acct_id, site_id){
-        var qry = "id=? AND acct_id=?"; 
-        var opt = [site_id, acct_id];
+    delSite: function(acct_id, site_id, site_secret){
+        var qry = "id=? AND acct_id=? AND secret=?"; 
+        var opt = [site_id, acct_id, site_secret];
         return dbase.select("sites", qry, opt) 
         .then(sites => {
             if(sites.length!=1){ 

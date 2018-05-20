@@ -70,7 +70,7 @@ describe("libs/accts.js", () => {
             .then(acct => g_acct=acct)
             .then(() => accts.addSite(g_acct.id, domain))
             .then(site => g_site=site)
-            .then(() => accts.delSite(g_acct.id, g_site.id))
+            .then(() => accts.delSite(g_acct.id, g_site.id, g_site.secret))
             .then(() => dbase.select("sites", "id=?", [g_site.id]))
             .then(sites => assert.equal(sites.length, 0))
             .then(() => done());
@@ -84,7 +84,7 @@ describe("libs/accts.js", () => {
             .then(acct => g_acct=acct)
             .then(() => accts.addSite(g_acct.id, domain))
             .then(site => g_site=site)
-            .then(() => accts.delSite(g_acct.id+1, g_site.id))
+            .then(() => accts.delSite(g_acct.id+1, g_site.id, g_site.secret))
             .catch(() => done());
         });
 
@@ -96,7 +96,19 @@ describe("libs/accts.js", () => {
             .then(acct => g_acct=acct)
             .then(() => accts.addSite(g_acct.id, domain))
             .then(site => g_site=site)
-            .then(() => accts.delSite(g_acct.id, g_site.id+1))
+            .then(() => accts.delSite(g_acct.id, g_site.id+1, g_site.secret))
+            .catch(() => done());
+        });
+
+        it("wrong site_secret.", done => {
+            var fb_id="fb_12341234", domain="asdf";
+            var g_site, g_acct;
+            
+            accts.getFbAcct(fb_id)
+            .then(acct => g_acct=acct)
+            .then(() => accts.addSite(g_acct.id, domain))
+            .then(site => g_site=site)
+            .then(() => accts.delSite(g_acct.id, g_site.id, g_site.secret+"1"))
             .catch(() => done());
         });
     }); 
