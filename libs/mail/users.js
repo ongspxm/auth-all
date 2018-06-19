@@ -1,6 +1,5 @@
 /** libs/mail/users.js */
 const crypto = require("crypto");
-
 const dbase = require("../dbase.js");
 
 fns = {
@@ -38,6 +37,23 @@ fns = {
 
             usr.phash = hash;
             return db.updateUser(usr);
+        });
+    },
+
+    // callback(ok)
+    createAcct: function(email){
+        var re = /[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}/igm;
+        if(!email || !re.test(email)){
+            return Promise.reject("libs/mail/users#createAcct email invalid format");
+        }
+
+        return fns.getUser(email)
+        .then(function(usr){
+            if(usr){ return Promise.reject("libs/mail/users#createAcct user already exist"); }
+
+            return dbase.insert("mail_users", {
+                email: email
+            });
         });
     }
 };

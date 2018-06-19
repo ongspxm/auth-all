@@ -1,4 +1,4 @@
-/** libs/fb/__tests__/user.js */
+/** libs/mail/__tests__/mail_users.js */
 const fs = require("fs");
 const assert = require("assert");
 
@@ -10,11 +10,11 @@ function getDB(){
     return (new sqlite.Database(DB_TMP));
 }
 
-describe("lib/fb/users.js", () => {
+describe("lib/mail/users.js", () => {
     beforeAll(() => {
         process.env.DB_DBASE = DB_TMP;
     });
-    
+
     beforeEach((done) => {
         dbase.setup().then(() => done());
     });
@@ -24,24 +24,24 @@ describe("lib/fb/users.js", () => {
     });
 
     describe("#getUser()", () => {
-        it("all good.", done => { 
-            dbase.insert("fb_users", {id:"asdf"})
-            .then(() => users.getUser("asdf"))
-            .then((usr) => assert.equal(usr.id, "asdf"))
+        it("all good.", done => {
+            var email = "asdf@example.com";
+
+            dbase.insert("mail_users", {email:email})
+            .then(() => users.getUser(email))
+            .then((usr) => assert.equal(usr.imgur_id, "rJd70DS"))
             .then(() => done());
         });
 
-        it("doesnt exist.", done => { 
-            users.getUser("asdf")
-            .then((usr) => assert.equal(usr.id, "asdf"))
-            .then(() => dbase.select("fb_users", "id=?", ["asdf"]))
-            .then((usrs) => assert.equal(usrs.length, 1))
+        it("doesnt exist.", done => {
+            users.getUser("asdf@example.com")
+            .then((usr) => assert.ok(!usr))
             .then(() => done());
         });
     });
 
     describe("#updateUser()", () => {
-        it("all good.", done => { 
+        it("all good.", done => {
             var id="asdf", name="asdf qwerty";
 
             dbase.insert("fb_users", {id:id, name:"qwerty"})
