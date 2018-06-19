@@ -9,6 +9,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS fb_id ON fb_users(id);
 CREATE TABLE IF NOT EXISTS mail_users(
     name TEXT,
     email TEXT UNIQUE,
+    phash TEXT,
     imgur_id TEXT DEFAULT 'rJd70DS'
 );
 CREATE UNIQUE INDEX IF NOT EXISTS mail_id ON mail_users(email);
