@@ -15,18 +15,6 @@ fns = {
     },
 
     // callback(ok)
-    updateUser: function(usr){
-        if(!usr.email){
-            return Promise.reject("libs/mail/users#updateUser no idx found");
-        }
-
-        // create if not exist
-        return fns.getUser(usr.email)
-        .then(dbase.update("mail_users", usr, "email=?", [usr.email]))
-        .then(() => true);
-    },
-
-    // callback(ok)
     changePass: function(email, pass){
         var load = pass + process.env.APP_SC;
         var hash = crypto.createHash('sha256').update(load).digest("hex");
@@ -36,8 +24,22 @@ fns = {
             if(!usr){ return Promise.reject("libs/mail/users#changePass no such user"); }
 
             usr.phash = hash;
-            return db.updateUser(usr);
+            return dbase.update("mail_users", usr, "email=?", [usr.email]);
         });
+    },
+
+    // callback(ok)
+    changeName: function(email, name){
+        return dbase.update("mail_users", {name: name}, "email=?", [email]);
+    },
+
+    // callback(true/false)
+    verifyPass: function(email, pass){
+        var load = pass + process.env.APP_SC;
+        var hash = crypto.createHash('sha256').update(load).digest("hex");
+
+        return fns.getUser(email)
+        .then((usr) => usr.phash===hash);
     },
 
     // callback(ok)
