@@ -1,5 +1,4 @@
-/** libs/fb/index.js */
-const fbapi = require("./api.js");
+/** libs/mail/index.js */
 const users = require("./users.js");
 
 module.exports = {
@@ -15,11 +14,11 @@ module.exports = {
             g_tkn=tkn; return fbapi.getUserInfo(g_tkn);
         })
         .then(usr => {
-            g_usr=usr; return fbapi.getUserPic(g_tkn); 
-        }) 
+            g_usr=usr; return fbapi.getUserPic(g_tkn);
+        })
         .then(pic => {
             g_usr.pic = pic;
-            return g_usr; 
+            return g_usr;
         })
         .then(() => g_usr);
     }
