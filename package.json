@@ -10,9 +10,14 @@
     "request": "^2.85.0",
     "sqlite3": "^4.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^5.4.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  },
   "scripts": {
     "test": "jest",
+    "lint": "eslint",
     "start": "node server.js"
   },
   "repository": {

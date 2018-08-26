@@ -1,0 +1,29 @@
+html
+  head
+    link(rel="stylesheet", href="//cdn.muicss.com/mui-0.9.40/css/mui.min.css")
+    link(rel="stylesheet", href="style.css")
+
+    script(src="//cdn.muicss.com/mui-0.9.40/js/mui.min.js")
+    script(src="script.js")
+  body
+    .login 
+      ul.mui-tabs__bar.login__tabs
+        li.mui--is-active.login__tabs__tab
+          a(data-mui-toggle="tab", data-mui-controls="login-fb") Facebook
+        li.login__tabs__tab
+          a(data-mui-toggle="tab", data-mui-controls="login-email") Email
+
+      .mui-tabs__pane.mui--is-active#login-fb.login__pane
+        button(onclick="loginFb()") Login with Facebook
+
+      .mui-tabs__pane#login-email.login__pane
+        form.mui-form(method="POST", action="/mail", onsubmit="loginEmail(this);")
+          .mui-textfield
+            input(type="text", name="email")
+            label email
+          .mui-textfield
+            input(type="password", name="pass")
+            label password
+          .buttons
+            button.mui-btn.mui-btn--raised(onclick="emailSignup=true;") Signup 
+            button.mui-btn.mui-btn--raised.mui-btn--primary Login 

@@ -1,8 +1,30 @@
 # auth-all
 
+## basic login details
+- clientId obtainable from `/app`
+- callback must start with `https`
+
 ## logging in user with facebook
+- GET `/login?clientId=&callback=` to show simple form
 - call `/fb?clientId=&callback=` to get redirected
-- will return to `...#/access_tkn=jwtToken`
+- will return to `${callback_url}#/access_tkn=jwtToken`
+
+## logging in user with email
+### logging in
+- GET `/login?clientId=&callback=` to show simple form
+- POST `/mail?clientId=&callback=&email=&pass=`
+- will return to `${callback_url}#/access_tkn=jwtToken`
+
+### creating new acct
+- GET `/login?clientId=&callback=` to show simple form
+- POST `/mail?clientId=&callback=&email=&pass=&newacct=`
+- will return to `${callback_url}#/access_tkn=jwtToken`
+
+### resetting password
+- GET `/login?clientId=&callback=` to show simple form
+- POST `/mail?email=&reset=reset` => "check email notification"
+- GET `/login?reset=xxx` to show simple form
+- POST `/mail?email=&pass=&reset=xxx` => "password changed"
 
 ## admin features
 - header: `Authorization: Bearer <jwt token>`

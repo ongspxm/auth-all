@@ -1,0 +1,48 @@
+.login{
+    max-width:40rem;
+    margin:0 auto;
+
+    font-family:sans-serif;
+
+    &__tabs{
+        display:flex;
+
+        &__tab{
+            cursor:pointer;
+
+            flex-grow:1;
+            text-align:center;
+        }
+    }
+
+    &__pane{
+        margin:1rem 2rem;
+    }
+
+    #login-fb{
+        text-align:center;
+
+        button{
+            padding:.5rem 1.5rem;
+            border-radius:.5rem;
+
+            color:#fff;
+            background:#3B5998;
+        }
+    }
+
+    #login-email{
+        form{
+            max-width:20rem;
+            margin:2rem auto;
+
+            .buttons{
+                display:flex;
+
+                button{
+                    flex-grow:1;
+                }
+            }
+        }
+    }
+}

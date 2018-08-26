@@ -9,10 +9,11 @@ const service = require("./libs/service.js");
 
 var app = express();
 app.use("/app", express.static("app/build"));
+app.use("/login", express.static("login/build"));
 
 function errFn(res, err){
-    if(!process.env.DEBUG || !err){ 
-        err = "woah, watch out there"; 
+    if(!process.env.DEBUG || !err){
+        err = "woah, watch out there";
     }
 
     res.status(400);
@@ -25,7 +26,7 @@ app.get("/fb", (req, res) => {
     state = req.query["state"];
 
     siteId = req.query["clientId"];
-    callbackURL = req.query["callback"]; 
+    callbackURL = req.query["callback"];
 
     if(!code || !state){
         if(!siteId || !callbackURL){
@@ -50,7 +51,7 @@ function extractJwt(req){
 
 app.get("/signin", (req, res) => {
     admin.signin("https://"+process.env.HOST+"/app")
-    .then(url => res.redirect(url)); 
+    .then(url => res.redirect(url));
 });
 
 app.get("/getSites", (req, res) => {
@@ -60,33 +61,33 @@ app.get("/getSites", (req, res) => {
 });
 
 app.get("/addSite", (req, res) => {
-    var domain = req.query.domain; 
+    var domain = req.query.domain;
     if(!domain){ return errFn(res); }
 
-    admin.addSite(extractJwt(req), domain) 
+    admin.addSite(extractJwt(req), domain)
     .then(site => res.send(JSON.stringify(site)))
     .catch(err => errFn(res, err));
-}); 
+});
 
 app.get("/delSite", (req, res) => {
-    var siteid = req.query.site; 
+    var siteid = req.query.site;
     var secret = req.query.secret;
     if(!siteid || !secret){ return errFn(res); }
 
-    admin.delSite(extractJwt(req), siteid, secret) 
+    admin.delSite(extractJwt(req), siteid, secret)
     .then(() => res.send(JSON.stringify({})))
     .catch(err => errFn(res, err));
-}); 
+});
 
 app.get("/genSecret", (req, res) => {
-    var siteid = req.query.site; 
+    var siteid = req.query.site;
     var secret = req.query.secret;
     if(!siteid || !secret){ return errFn(res); }
 
-    admin.genSecret(extractJwt(req), siteid, secret) 
+    admin.genSecret(extractJwt(req), siteid, secret)
     .then(() => res.send(JSON.stringify({})))
     .catch(err => errFn(res, err));
-}); 
+});
 
 var listener = app.listen(3000, function(){
     console.log("running on port "+listener.address().port);
