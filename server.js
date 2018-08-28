@@ -5,6 +5,7 @@ const admin = require('./libs/server_admin.js');
 const service = require('./libs/service.js');
 
 const app = express();
+app.use(express.urlencoded({ extended: true }));
 app.use('/app', express.static('app/build'));
 app.use('/login', express.static('login/build'));
 
@@ -39,8 +40,24 @@ app.get('/fb', (req, res) => {
     .catch(err => errFn(res, err));
 });
 
-app.post('/post', (req, res) => {
+/** mail authentication **/
+app.post('/mail', (req, res) => {
+  const { clientId: siteId } = req.body;
+  const { callback: callbackURL } = req.body;
+  const { email, pass } = req.body;
+  const { newacct, reset } = req.body;
 
+  if (!siteId || !callbackURL || !email) {
+    res.status(400);
+    return res.send('woah, watch out right there.');
+  }
+
+  if (newacct !== undefined) {
+  } else if (reset !== undefined) {
+    res.send('right, check you email for the next instruction');
+  } else {
+    res.send('normal login');
+  }
 });
 
 /** admin endpoints * */
