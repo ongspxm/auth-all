@@ -12,12 +12,13 @@ var callbackURL = "https://"+process.env.HOST+"/fb";
 
 // 3 days expiry
 var expiry = 3*24*60*60*1000;
-var getTkn = () => {
+var getTkn = (secret, obj = {}) => {
   var d = (new Date()).getTime();
-  return {
-    iat: d,
-    exp: d+expiry
-  };
+  obj.iat = d;
+  obj.exp = d+expiry;
+  obj.src = 'authall';
+
+  return jwt.encode(obj, secret);
 };
 
 module.exports = {
@@ -65,17 +66,11 @@ module.exports = {
       .then(() => fb.getInfo(reqCode, callbackURL))
       .then(usr => g_usr=usr)
       .then(() => accts.getSite(g_signin.site_id))
-      .then(site => {
-        g_site=site;
-
-        var tkn = getTkn();
-        tkn.iss = site.domain;
-        tkn.sub = "fb_"+g_usr.id;
-        tkn.pic = g_usr.pic;
-
-        return tkn;
-      })
-      .then(payload => jwt.encode(payload, g_site.secret))
+      .then(site => getTkn(site.secret, {
+        iss: site.domain,
+        sub: 'fb_'+g_usr.id,
+        pic: g_usr.pic
+      }))
       .then(tkn => g_signin.callback+"#access_token="+tkn);
   }
 };
