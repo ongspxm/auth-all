@@ -33,13 +33,13 @@ fns = {
         return dbase.update("mail_users", {name: name}, "email=?", [email]);
     },
 
-    // callback(true/false)
+    // callback(usr)
     verifyPass: function(email, pass){
         var load = pass + process.env.APP_SC;
         var hash = crypto.createHash('sha256').update(load).digest("hex");
 
         return fns.getUser(email)
-        .then((usr) => usr.phash===hash);
+        .then((usr) => usr.phash===hash ? usr : undefined);
     },
 
     // callback(ok)

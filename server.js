@@ -53,10 +53,13 @@ app.post('/mail', (req, res) => {
   }
 
   if (newacct !== undefined) {
+    res.send('new login');
   } else if (reset !== undefined) {
     res.send('right, check you email for the next instruction');
   } else {
-    res.send('normal login');
+    service.mailLogin(siteId, callbackURL, email, pass)
+      .then(url => res.redirect(url))
+      .catch(() => res.send('unable to login'));
   }
 });
 
