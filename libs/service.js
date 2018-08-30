@@ -25,6 +25,27 @@ var getTkn = (secret, obj = {}) => {
 
 module.exports = {
   // callback(url) their own app
+  mailCreate: function(clientId, cbUrl, email, pass){
+    if(!cbUrl){
+      return Promise.reject("libs/service#mailLogin callback url not provided");
+    }
+    if(!cbUrl.startsWith("http")){
+      return Promise.reject("libs/service#mailLogin only https allowed");
+    }
+
+    let g_site;
+    return accts.getSite(clientId)
+      .then(site => g_site=site)
+      .then(() => mail.verifyPass(email, pass))
+      .then(usr => getTkn(g_site.secret, {
+        iss: g_site.domain,
+        sub: `mail_${usr.email}`,
+        pic: imgur.getUrl(usr.imgur_id),
+      }))
+      .then(tkn => `${cbUrl}#access_token=${tkn}`);
+  },
+
+  // callback(url) their own app
   mailLogin: function(clientId, cbUrl, email, pass){
     if(!cbUrl){
       return Promise.reject("libs/service#mailLogin callback url not provided");

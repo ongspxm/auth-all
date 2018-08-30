@@ -51,7 +51,9 @@ fns = {
 
         return fns.getUser(email)
         .then(function(usr){
-            if(usr){ return Promise.reject("libs/mail/users#createAcct user already exist"); }
+            if(usr){
+              return Promise.reject("libs/mail/users#createAcct user already exist");
+            }
 
             return dbase.insert("mail_users", {
                 email: email
