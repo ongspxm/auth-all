@@ -1,0 +1,20 @@
+html
+  head
+    link(rel="stylesheet", href="//cdn.muicss.com/mui-0.9.40/css/mui.min.css")
+    link(rel="stylesheet", href="style.css")
+
+    script(src="//cdn.muicss.com/mui-0.9.40/js/mui.min.js")
+    script(src="script.js")
+  body
+    .reset
+      .mui--text-headline Reset Password
+      form.mui-form(method="POST", action="/mail")
+        .mui--text-subhead Enter your new password
+        .mui-textfield
+          input(type="password", name="pass")
+          label password
+        .mui-textfield
+          input(type="password", name="pass2")
+          label password again
+        .buttons
+          button.mui-btn.mui-btn--raised.mui-btn--primary Login 
