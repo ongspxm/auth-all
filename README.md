@@ -17,8 +17,8 @@
 
 ### creating new acct
 - GET `/login?clientId=&callback=` to show simple form
-- POST `/mail?clientId=&callback=&email=&pass=&newacct=`
-- will return to `${callback_url}#/access_tkn=jwtToken`
+- POST `/mail?clientId=&callback=&email=&newacct=` => ok
+- email sent for password setup
 
 ### resetting password
 - GET `/login?clientId=&callback=` to show simple form
