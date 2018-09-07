@@ -1,7 +1,7 @@
 /** libs/mailgun.js */
 const request = require('request');
 
-const API_URL = 'https://api.mailgun.net/v3/mg.om-singapore.com';
+const API_URL = `https://api.mailgun.net/v3/${process.env.MG_HOST}`;
 const API_KEY = process.env.MG_API_KEY;
 
 module.exports = {
